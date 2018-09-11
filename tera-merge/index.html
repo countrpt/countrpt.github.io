@@ -110,7 +110,7 @@
 
                 if (serversWithSpace.length > 0)
                 {
-                    serversWithSpaceMessage += " You may be able to transfer these characters to one of the following servers: ";
+                    serversWithSpaceMessage += " You may be able to transfer characters to one of the following servers: ";
                     for (var j = 0; j < serversWithSpace.length; j++)
                     {
                         serversWithSpaceMessage += serversWithSpace[j];
@@ -167,7 +167,7 @@
 
                     report[serverName] += "</li>";
                 }
-                if (finalCount[serverName].slotsToUse > 0)
+                if ((finalCount[serverName].slotsToUse > 0) && (finalCount[serverName].total > 2))
                 {
                     hasActions = true;
                     report[serverName] += "<li>You need to use <strong>" + finalCount[serverName].slotsToUse + " character slot(s)</strong> on <strong>";
@@ -192,6 +192,11 @@
                     }
 
                     report[serverName] += "</strong> prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)";
+
+                    if ((finalCount[serverName].total <= 8))
+                    {
+                        report[serverName] += " If you have a founders account, you already have 8 slots on this server and will not need to buy more slots. ";
+                    }
 
                     if (serversWithSpace.length > 0)
                     {
@@ -326,7 +331,7 @@
     <li>18 September 2018: Server Merge scheduled to begin</li>
 </ul>
 
-<p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, or if you used slots without creating characters, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
+<p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, or if you used slots without creating characters, you may have additional available space.  There's no way to check this right now except to try creating characters.  If you are a regular F2P account, you start with 2 slots on each server.  Founder accounts have 8 slots on each server.</p>
 
 
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
