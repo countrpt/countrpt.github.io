@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TERA Server Merge Calculator</title>
 
     <script language="JavaScript">
@@ -175,7 +176,7 @@
             {
                 var item = elements.item(i);
 
-                if (item.type == "text")
+                if (item.type == "number")
                 {
                     resultValues[item.id] = parseInt(item.value);
 
@@ -267,23 +268,23 @@
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
             <label>TR:</label>
-            <input class="server" name="TR" id="TR" type="text" maxlength="2" />
+            <input class="server" name="TR" id="TR" type="number" max="20" />
         </div>
         <div class="serverRow">
             <label>AV:</label>
-            <input class="server" name="AV" id="AV" type="text" maxlength="2" />
+            <input class="server" name="AV" id="AV" type="number" max="20" />
         </div>
         <div class="serverRow">
             <label>CH:</label>
-            <input class="server" name="CH" id="CH" type="text" maxlength="2" />
+            <input class="server" name="CH" id="CH" type="number" max="20" />
         </div>
         <div class="serverRow">
             <label>FF:</label>
-            <input class="server" name="FF" id="FF" type="text" maxlength="2" />
+            <input class="server" name="FF" id="FF" type="number" max="20" />
         </div>
         <div class="serverRow">
             <label>MT:</label>
-            <input class="server" name="MT" id="MT" type="text" maxlength="2" />
+            <input class="server" name="MT" id="MT" type="number" max="20" />
         </div>
         <div><input class="button" type="submit" name="calcButton" id="calcButton" value="Calculate" /></div>
     </form>
