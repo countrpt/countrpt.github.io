@@ -5,6 +5,12 @@
     <title>TERA Server Merge Calculator</title>
 
     <script language="JavaScript">
+        /*
+        This script was created very quickly to provide advice about the TERA NA server merger.  It's not great code, but it appears to work.
+        If there's some issue, please contact me on the EME TERA Forums.  (https://forums.enmasse.com/tera/)
+          - counterpoint (2018-09-11)
+         */
+
         var serverMerge = {};
         serverMerge["TR+AV"] = new Array("TR", "AV");
         serverMerge["CH"] = new Array("CH");
@@ -143,7 +149,7 @@
                 if (finalCount[serverName].slotsToUse > 0)
                 {
                     hasActions = true;
-                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slots this server prior to the merge to avoid losing characters.  (8 will be provided for free.)</li>";
+                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slots on this server prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)</li>";
                 }
 
                 if (hasActions === false)
@@ -255,8 +261,8 @@
 </head>
 <body onload="init();">
 <h2>TERA NA Server Merge Calculator</h2>
-<h4>Enter the amount of characters you have on each server in the boxes below.</h4>
-<p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
+<h4>Enter the number of characters you have on each server in the boxes below.</h4>
+<p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, or if you used slots without creating characters, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
 
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
