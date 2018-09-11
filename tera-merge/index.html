@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TERA Server Merge Calculator</title>
+
+    <script language="JavaScript">
+        var serverMerge = {};
+        serverMerge["VK"] = new Array("TR", "AV");
+        serverMerge["CH"] = new Array("CH");
+        serverMerge["KT"] = new Array("MT", "FF");
+
+        var finalCount = {};
+        var charCap = 20;
+
+        var currentValues;
+        var resultsField;
+
+
+        function init()
+        {
+            resultsField = document.getElementById("results");
+        }
+
+
+        function calculate()
+        {
+            currentValues = getValues();
+
+            resultsField.innerHTML = "<h4>Results:</h4>";
+
+            for (serverName in serverMerge)
+            {
+                finalCount[serverName] = {};
+                finalCount[serverName].rawTotal = 0;
+                finalCount[serverName].excess = 0;
+                finalCount[serverName].total = 0;
+                finalCount[serverName].highestValue = 0;
+                finalCount[serverName].slotsToUse = 0;
+
+                for (var i = 0; i < serverMerge[serverName].length; i++)
+                {
+                    if (!isNaN(currentValues[serverMerge[serverName][i]]))
+                    {
+                        finalCount[serverName].rawTotal += currentValues[serverMerge[serverName][i]];
+
+                        if (currentValues[serverMerge[serverName][i]] > finalCount[serverName].highestValue)
+                        {
+                            finalCount[serverName].highestValue = currentValues[serverMerge[serverName][i]];
+                        }
+                    }
+                }
+
+                finalCount[serverName].total = finalCount[serverName].rawTotal;
+                if (finalCount[serverName].rawTotal > charCap)
+                {
+                    finalCount[serverName].total = charCap;
+                    finalCount[serverName].excess = finalCount[serverName].rawTotal - charCap;
+                }
+
+                if (finalCount[serverName].total > finalCount[serverName].highestValue)
+                {
+                    finalCount[serverName].slotsToUse = finalCount[serverName].total - finalCount[serverName].highestValue;
+                }
+
+            }
+
+            printSummary();
+
+        }
+
+
+        function printSummary()
+        {
+            var report = {};
+
+            var serversWithSpace = new Array();
+
+            for (serverName in serverMerge)
+            {
+                if (finalCount[serverName].total < charCap)
+                {
+                    for (var i = 0; i < serverMerge[serverName].length; i++)
+                    {
+                        serversWithSpace.push(serverMerge[serverName][i]);
+                    }
+                }
+            }
+
+            for (serverName in serverMerge)
+            {
+                report[serverName] = "<div><h5>Actions needed for " + serverName + "</h5><ul>";
+
+                resultsField.innerHTML += "<div><label>" + serverName + ": </label>";
+
+                var warnClass = "acceptable";
+                if (finalCount[serverName].excess > 0)
+                {
+                    warnClass = "warning";
+                }
+                else if (finalCount[serverName].slotsToUse > 0)
+                {
+                    warnClass = "advice";
+                }
+
+                resultsField.innerHTML += "<span class=\"" + warnClass + "\">" + finalCount[serverName].total + "</span>";
+
+                if (finalCount[serverName].slotsToUse > 0)
+                {
+                    resultsField.innerHTML += " <span class=\"slots\">(+" + finalCount[serverName].slotsToUse + ")</span>";
+                }
+
+                resultsField.innerHTML += "</div>";
+
+                var hasActions = false;
+
+                if (finalCount[serverName].excess > 0)
+                {
+                    hasActions = true;
+                    report[serverName] += "<li>You will have " + finalCount[serverName].excess + " excess characters on this server.";
+
+                    if (serversWithSpace.length > 0)
+                    {
+                        report[serverName] += " You may be able to use character slots and transfer these characters to one of the servers: ";
+                        for (var j = 0; j < serversWithSpace.length; j++)
+                        {
+                            report[serverName] += serversWithSpace[j];
+
+                            if (j + 1 < serversWithSpace.length)
+                            {
+                                report[serverName] += ", ";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        report[serverName] += " Unfortunately, none of the other servers have available space, so you will need to delete characters until you reach the cap.";
+                    }
+                    report[serverName] += "</li>";
+                }
+                if (finalCount[serverName].slotsToUse > 0)
+                {
+                    hasActions = true;
+                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slots this server prior to the merge to avoid losing characters.  (8 will be provided for free.)</li>";
+                }
+
+                if (hasActions === false)
+                {
+                    report[serverName] += "<li>No actions required</li>";
+                }
+
+                report[serverName] += "</ul></div>";
+            }
+
+            for (serverName in report)
+            {
+                resultsField.innerHTML += report[serverName];
+            }
+
+        }
+
+        function getValues()
+        {
+            var resultValues = {};
+            var elements = document.getElementById("serverForm").elements;
+            for (var i = 0; i < elements.length; i++)
+            {
+                var item = elements.item(i);
+
+                if (item.type == "text")
+                {
+                    resultValues[item.id] = parseInt(item.value);
+
+                    if (isNaN(parseInt(item.value))) {
+                        item.value = 0;
+                    }
+                }
+            }
+
+            return resultValues;
+        }
+    </script>
+
+    <style type="text/css">
+        body
+        {
+            font-family: "Verdana";
+            font-size: large;
+        }
+
+        label
+        {
+            /* font-size: large;*/
+            display: block;
+            float: left;
+            width: 5em;
+            clear: left;
+        }
+
+        input.server
+        {
+            font-size: large;
+            display: block;
+            width: 4em;
+        }
+
+        input.button
+        {
+            margin: 1em 1em 1em 1em;
+            clear: both;
+            font-size: large;
+        }
+
+        .results
+        {
+            font-size: medium;
+        }
+
+        span
+        {
+            clear: none;
+        }
+
+        .warning
+        {
+            color: red;
+            font-weight: bold;
+        }
+
+        .advice
+        {
+            color: darkgoldenrod;
+            font-weight: bold;
+        }
+
+        .acceptable
+        {
+            color: green;
+        }
+
+        .slots
+        {
+            color: darkgoldenrod;
+            font-style: italic;
+        }
+
+        .note
+        {
+            font-size: smaller;
+        }
+
+    </style>
+</head>
+<body onload="init();">
+<h2>TERA NA Server Merge Calculator</h2>
+<h4>Enter the amount of characters you have on each server in the boxes below.</h4>
+<p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
+
+    <form name="serverForm" id="serverForm" action="#results">
+        <div class="serverRow">
+            <label>TR:</label>
+            <input class="server" name="TR" id="TR" type="text" maxlength="2" />
+        </div>
+        <div class="serverRow">
+            <label>AV:</label>
+            <input class="server" name="AV" id="AV" type="text" maxlength="2" />
+        </div>
+        <div class="serverRow">
+            <label>CH:</label>
+            <input class="server" name="CH" id="CH" type="text" maxlength="2" />
+        </div>
+        <div class="serverRow">
+            <label>FF:</label>
+            <input class="server" name="FF" id="FF" type="text" maxlength="2" />
+        </div>
+        <div class="serverRow">
+            <label>MT:</label>
+            <input class="server" name="MT" id="MT" type="text" maxlength="2" />
+        </div>
+        <div><input class="button" type="button" name="calcButton" id="calcButton" value="Calculate" onclick="calculate();" /></div>
+    </form>
+
+<div class="results" id="results" />
+</body>
+</html>
