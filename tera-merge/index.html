@@ -154,7 +154,7 @@
                 if (finalCount[serverName].excess > 0)
                 {
                     hasActions = true;
-                    report[serverName] += "<li>You will have " + finalCount[serverName].excess + " excess character(s) on this server.";
+                    report[serverName] += "<li>You will have <strong>" + finalCount[serverName].excess + " excess character(s)</strong> that cannot be accommodated on the merged server.";
 
                     if (serversWithSpace.length > 0)
                     {
@@ -309,12 +309,25 @@
             font-size: smaller;
         }
 
+        form
+        {
+            margin-top: 2em;
+        }
+
     </style>
 </head>
 <body onload="init();">
 <h2>TERA NA Server Merge Calculator</h2>
 <h4>Enter the number of characters you have on each server in the boxes below.</h4>
+<p>Key Dates:</p>
+<ul class="note">
+    <li>11 September 2018: Character Slots Distributed to Item Claim upon login (between 11am PDT and the merger)</li>
+    <li>13 September 2018: Server Maintenance, expected announcement about CH</li>
+    <li>18 September 2018: Server Merge scheduled to begin</li>
+</ul>
+
 <p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, or if you used slots without creating characters, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
+
 
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
