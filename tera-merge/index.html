@@ -180,7 +180,8 @@
                 {
                     resultValues[item.id] = parseInt(item.value);
 
-                    if (isNaN(parseInt(item.value))) {
+                    if ((isNaN(parseInt(item.value))) || (parseInt(item.value) < 0))
+                    {
                         item.value = 0;
                     }
                 }
@@ -268,23 +269,23 @@
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
             <label>TR:</label>
-            <input class="server" name="TR" id="TR" type="number" max="20" />
+            <input class="server" name="TR" id="TR" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
             <label>AV:</label>
-            <input class="server" name="AV" id="AV" type="number" max="20" />
+            <input class="server" name="AV" id="AV" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
             <label>CH:</label>
-            <input class="server" name="CH" id="CH" type="number" max="20" />
+            <input class="server" name="CH" id="CH" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
             <label>FF:</label>
-            <input class="server" name="FF" id="FF" type="number" max="20" />
+            <input class="server" name="FF" id="FF" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
             <label>MT:</label>
-            <input class="server" name="MT" id="MT" type="number" max="20" />
+            <input class="server" name="MT" id="MT" type="number" min="0" max="20" />
         </div>
         <div><input class="button" type="submit" name="calcButton" id="calcButton" value="Calculate" /></div>
     </form>
