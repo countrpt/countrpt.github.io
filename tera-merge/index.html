@@ -67,6 +67,8 @@
 
             printSummary();
 
+            return false;
+
         }
 
 
@@ -256,7 +258,7 @@
 <h4>Enter the amount of characters you have on each server in the boxes below.</h4>
 <p class="note">NOTE: This form assumes that the number of characters on each server equals the number of character slots used.  If you deleted characters in the past, you may have additional available space.  There's no way to check this right now except to try creating characters.</p>
 
-    <form name="serverForm" id="serverForm" action="#results">
+    <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
             <label>TR:</label>
             <input class="server" name="TR" id="TR" type="text" maxlength="2" />
@@ -277,7 +279,7 @@
             <label>MT:</label>
             <input class="server" name="MT" id="MT" type="text" maxlength="2" />
         </div>
-        <div><input class="button" type="button" name="calcButton" id="calcButton" value="Calculate" onclick="calculate();" /></div>
+        <div><input class="button" type="submit" name="calcButton" id="calcButton" value="Calculate" /></div>
     </form>
 
 <div class="results" id="results" />
