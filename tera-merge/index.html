@@ -126,11 +126,11 @@
                 if (finalCount[serverName].excess > 0)
                 {
                     hasActions = true;
-                    report[serverName] += "<li>You will have " + finalCount[serverName].excess + " excess characters on this server.";
+                    report[serverName] += "<li>You will have " + finalCount[serverName].excess + " excess character(s) on this server.";
 
                     if (serversWithSpace.length > 0)
                     {
-                        report[serverName] += " You may be able to use character slots and transfer these characters to one of the servers: ";
+                        report[serverName] += " You may be able to use character slots and transfer these characters to one of the following servers: ";
                         for (var j = 0; j < serversWithSpace.length; j++)
                         {
                             report[serverName] += serversWithSpace[j];
@@ -150,7 +150,7 @@
                 if (finalCount[serverName].slotsToUse > 0)
                 {
                     hasActions = true;
-                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slots on this server prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)  Otherwise, you may delete excess characters.</li>";
+                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slot(s) on this server prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)  Otherwise, you may delete excess characters.</li>";
                 }
 
                 if (hasActions === false)
