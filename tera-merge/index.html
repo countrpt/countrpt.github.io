@@ -20,6 +20,8 @@
         var finalCount = {};
         var charCap = 20;
 
+        var isFounder;
+
         var currentValues;
         var resultsField;
 
@@ -34,7 +36,7 @@
         {
             currentValues = getValues();
 
-            resultsField.innerHTML = "<h4>Results:</h4>";
+            resultsField.innerHTML = "<h3>Results:</h3>";
 
             for (serverName in serverMerge)
             {
@@ -74,9 +76,11 @@
                     finalCount[serverName].excess = finalCount[serverName].rawTotal - charCap;
                 }
 
-                if (finalCount[serverName].total > finalCount[serverName].highestValue)
+                var serverLimit = (isFounder) ? 8 : 2;
+
+                if ((finalCount[serverName].total > finalCount[serverName].highestValue) && (finalCount[serverName].total > serverLimit))
                 {
-                    finalCount[serverName].slotsToUse = finalCount[serverName].total - finalCount[serverName].highestValue;
+                    finalCount[serverName].slotsToUse = (finalCount[serverName].highestValue < serverLimit) ? finalCount[serverName].total - serverLimit : finalCount[serverName].total - finalCount[serverName].highestValue;
                 }
 
             }
@@ -91,6 +95,7 @@
         function printSummary()
         {
             var report = {};
+            var serverLimit = (isFounder) ? 8 : 2;
 
             for (serverName in serverMerge)
             {
@@ -123,12 +128,13 @@
                             serversWithSpaceMessage += ".";
                         }
                     }
+                    serversWithSpaceMessage += " (You may need to use character slots on the destination server prior to transferring.)";
                 }
 
 
-                report[serverName] = "<div><h5>Actions needed for " + serverName + "</h5><ul>";
+                report[serverName] = "<div><h4 class=\"actionNeeded\">Actions needed for " + serverName + "</h4><ul>";
 
-                resultsField.innerHTML += "<div><label>" + serverName + ": </label>";
+                resultsField.innerHTML += "<div><label class=\"serverName\">" + serverName + ": </label>";
 
                 var warnClass = "acceptable";
                 if (finalCount[serverName].excess > 0)
@@ -144,7 +150,12 @@
 
                 if (finalCount[serverName].slotsToUse > 0)
                 {
-                    resultsField.innerHTML += " <span class=\"slots\">(+" + finalCount[serverName].slotsToUse + ")</span>";
+                    resultsField.innerHTML += " <span class=\"slots\">(need +" + finalCount[serverName].slotsToUse + " slots)</span>";
+                }
+
+                if (finalCount[serverName].excess > 0)
+                {
+                    resultsField.innerHTML += " <span class=\"warning\">(" + finalCount[serverName].excess + " excess)</span>";
                 }
 
                 resultsField.innerHTML += "</div>";
@@ -167,7 +178,9 @@
 
                     report[serverName] += "</li>";
                 }
-                if ((finalCount[serverName].slotsToUse > 0) && (finalCount[serverName].total > 2))
+
+
+                if ((finalCount[serverName].slotsToUse > 0) && (finalCount[serverName].total > serverLimit))
                 {
                     hasActions = true;
                     report[serverName] += "<li>You need to use <strong>" + finalCount[serverName].slotsToUse + " character slot(s)</strong> on <strong>";
@@ -193,19 +206,24 @@
 
                     report[serverName] += "</strong> prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)";
 
+                    /*
                     if ((finalCount[serverName].total <= 8))
                     {
                         report[serverName] += " If you have a founders account, you already have 8 slots on this server and will not need to add any more. ";
                     }
+                    */
 
+                    report[serverName] += "<ul><li><em>If you do not or cannot use character slots now: </em>"
                     if (serversWithSpace.length > 0)
                     {
                         report[serverName] += serversWithSpaceMessage;
                     }
 
-                    report[serverName] += " Otherwise, you may delete excess characters.";
-
+                    report[serverName] += " You may also choose to delete excess characters.";
                     report[serverName] += "</li>";
+
+                    report[serverName] += "<li><em>If you wait until after the merger</em>:  You can set any character above level 40 to \"deletion mode\" for 24 hours to meet the requirement, apply the character slots, and then cancel the deletion.  Otherwise, you will either have to transfer or delete excess characters.";
+                    report[serverName] += "</ul></li>";
                 }
 
                 if (hasActions === false)
@@ -226,6 +244,8 @@
         function getValues()
         {
             var resultValues = {};
+            isFounder = false;
+
             var elements = document.getElementById("serverForm").elements;
             for (var i = 0; i < elements.length; i++)
             {
@@ -240,6 +260,11 @@
                         item.value = 0;
                     }
                 }
+
+                if ((item.id == "founder") && (item.checked == true))
+                {
+                    isFounder = true;
+                }
             }
 
             return resultValues;
@@ -253,13 +278,19 @@
             font-size: large;
         }
 
-        label
+        label.serverName
         {
             /* font-size: large;*/
             display: block;
             float: left;
             width: 5em;
             clear: left;
+        }
+
+        input
+        {
+            padding-bottom: 0em;
+            margin-bottom: 0.2em;
         }
 
         input.server
@@ -319,6 +350,23 @@
             margin-top: 2em;
         }
 
+        li
+        {
+            padding-top: 0.3em;
+        }
+
+        ul
+        {
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        h4.actionNeeded
+        {
+            margin-bottom: 0;
+            padding-bottom: 0.1em;
+        }
+
     </style>
 </head>
 <body onload="init();">
@@ -336,25 +384,26 @@
 
     <form name="serverForm" id="serverForm" action="" onsubmit="return calculate();">
         <div class="serverRow">
-            <label>TR:</label>
+            <label class="serverName">TR:</label>
             <input class="server" name="TR" id="TR" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
-            <label>AV:</label>
+            <label class="serverName">AV:</label>
             <input class="server" name="AV" id="AV" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
-            <label>CH:</label>
+            <label class="serverName">CH:</label>
             <input class="server" name="CH" id="CH" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
-            <label>FF:</label>
+            <label class="serverName">FF:</label>
             <input class="server" name="FF" id="FF" type="number" min="0" max="20" />
         </div>
         <div class="serverRow">
-            <label>MT:</label>
+            <label class="serverName">MT:</label>
             <input class="server" name="MT" id="MT" type="number" min="0" max="20" />
         </div>
+        <div><label><input type="checkbox" name="founder" id="founder" value="1" /> Founder account?</label></div>
         <div><input class="button" type="submit" name="calcButton" id="calcButton" value="Calculate" /></div>
     </form>
 
