@@ -43,6 +43,7 @@
                 finalCount[serverName].excess = 0;
                 finalCount[serverName].total = 0;
                 finalCount[serverName].highestValue = 0;
+                finalCount[serverName].highestServer = new Array();
                 finalCount[serverName].slotsToUse = 0;
 
                 for (var i = 0; i < serverMerge[serverName].length; i++)
@@ -51,10 +52,18 @@
                     {
                         finalCount[serverName].rawTotal += currentValues[serverMerge[serverName][i]];
 
-                        if (currentValues[serverMerge[serverName][i]] > finalCount[serverName].highestValue)
+                        if (currentValues[serverMerge[serverName][i]] >= finalCount[serverName].highestValue)
                         {
                             finalCount[serverName].highestValue = currentValues[serverMerge[serverName][i]];
                         }
+                    }
+                }
+
+                for (var j = 0; j < serverMerge[serverName].length; j++)
+                {
+                    if (finalCount[serverName].highestValue == currentValues[serverMerge[serverName][j]])
+                    {
+                        finalCount[serverName].highestServer.push(serverMerge[serverName][j]);
                     }
                 }
 
@@ -83,21 +92,40 @@
         {
             var report = {};
 
-            var serversWithSpace = new Array();
-
             for (serverName in serverMerge)
             {
-                if (finalCount[serverName].total < charCap)
+                var serversWithSpace = new Array();
+                var serversWithSpaceMessage = "";
+
+                for (serverName2 in serverMerge)
                 {
-                    for (var i = 0; i < serverMerge[serverName].length; i++)
+                    if ((serverName != serverName2) && (finalCount[serverName2].total < charCap))
                     {
-                        serversWithSpace.push(serverMerge[serverName][i]);
+                        for (var i = 0; i < serverMerge[serverName2].length; i++)
+                        {
+                            serversWithSpace.push(serverMerge[serverName2][i]);
+                        }
                     }
                 }
-            }
 
-            for (serverName in serverMerge)
-            {
+                if (serversWithSpace.length > 0)
+                {
+                    serversWithSpaceMessage += " You may be able to use character slots and transfer these characters to one of the following servers: ";
+                    for (var j = 0; j < serversWithSpace.length; j++)
+                    {
+                        serversWithSpaceMessage += serversWithSpace[j];
+
+                        if (j + 1 < serversWithSpace.length) {
+                            serversWithSpaceMessage += ", ";
+                        }
+                        else
+                        {
+                            serversWithSpaceMessage += ".";
+                        }
+                    }
+                }
+
+
                 report[serverName] = "<div><h5>Actions needed for " + serverName + "</h5><ul>";
 
                 resultsField.innerHTML += "<div><label>" + serverName + ": </label>";
@@ -130,27 +158,49 @@
 
                     if (serversWithSpace.length > 0)
                     {
-                        report[serverName] += " You may be able to use character slots and transfer these characters to one of the following servers: ";
-                        for (var j = 0; j < serversWithSpace.length; j++)
-                        {
-                            report[serverName] += serversWithSpace[j];
-
-                            if (j + 1 < serversWithSpace.length)
-                            {
-                                report[serverName] += ", ";
-                            }
-                        }
+                        report[serverName] += serversWithSpaceMessage;
                     }
                     else
                     {
                         report[serverName] += " Unfortunately, none of the other servers have available space, so you will need to delete characters until you reach the cap.";
                     }
+
                     report[serverName] += "</li>";
                 }
                 if (finalCount[serverName].slotsToUse > 0)
                 {
                     hasActions = true;
-                    report[serverName] += "<li>You need to use " + finalCount[serverName].slotsToUse + " character slot(s) on this server prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)  Otherwise, you may delete excess characters.</li>";
+                    report[serverName] += "<li>You need to use <strong>" + finalCount[serverName].slotsToUse + " character slot(s)</strong> on <strong>";
+
+                    if (finalCount[serverName].highestServer.length == 1)
+                    {
+                        report[serverName] += finalCount[serverName].highestServer[0];
+                    }
+                    else
+                    {
+                        report[serverName] += "either ";
+
+                        for (var k = 0; k < finalCount[serverName].highestServer.length; k++)
+                        {
+                            report[serverName] += finalCount[serverName].highestServer[k];
+
+                            if (k + 1 < finalCount[serverName].highestServer.length)
+                            {
+                                report[serverName] += " or ";
+                            }
+                        }
+                    }
+
+                    report[serverName] += "</strong> prior to the merge to be able to enter the server.  (8 slot items will be provided for free in Item Claim.)";
+
+                    if (serversWithSpace.length > 0)
+                    {
+                        report[serverName] += serversWithSpaceMessage;
+                    }
+
+                    report[serverName] += " Otherwise, you may delete excess characters.";
+
+                    report[serverName] += "</li>";
                 }
 
                 if (hasActions === false)
