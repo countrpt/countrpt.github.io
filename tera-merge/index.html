@@ -46,12 +46,18 @@
                 finalCount[serverName].highestValue = 0;
                 finalCount[serverName].highestServer = new Array();
                 finalCount[serverName].slotsToUse = 0;
+                finalCount[serverName].serversWithCharacters = 0;
 
                 for (var i = 0; i < serverMerge[serverName].length; i++)
                 {
                     if (!isNaN(currentValues[serverMerge[serverName][i]]))
                     {
                         finalCount[serverName].rawTotal += currentValues[serverMerge[serverName][i]];
+
+                        if (currentValues[serverMerge[serverName][i]] > 0)
+                        {
+                            finalCount[serverName].serversWithCharacters++;
+                        }
 
                         if (currentValues[serverMerge[serverName][i]] >= finalCount[serverName].highestValue)
                         {
@@ -223,6 +229,12 @@
 
                     report[serverName] += "<li><em>If you wait until after the merger: </em>You can set any character above level 40 to \"deletion mode\" for 24 hours until you meet the character count requirement, enter and apply the character slots, and then cancel the deletions.  Otherwise, you will either have to transfer or delete excess characters.";
                     report[serverName] += "</ul></li>";
+                }
+
+                if (finalCount[serverName].serversWithCharacters > 2)
+                {
+                    hasActions = true;
+                    report[serverName] += "<li>If you have more than 16 total bank slots/8 total wardrobe slots across the contributing servers <strong>you are at risk of losing items</strong>.  <a href=\"https://forums.enmasse.com/tera/discussion/28729/important-psa-temporary-bank-and-wardrobe-slot-limit-and-item-deletion-risk\" target=\"_blank\">More information.</a></li>";
                 }
 
                 if (hasActions === false)
